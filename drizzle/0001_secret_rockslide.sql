@@ -1,0 +1,1 @@
+ALTER TABLE "user_settings" DROP COLUMN "zapier_webhook_url";

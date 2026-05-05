@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1771420433226,
+      "tag": "0000_cold_deadpool",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776874916314,
+      "tag": "0001_secret_rockslide",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776876048518,
+      "tag": "0002_whole_jackpot",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776879622261,
+      "tag": "0003_aromatic_ink",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777875689296,
+      "tag": "0004_new_viper",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777876884577,
+      "tag": "0005_graceful_valkyrie",
+      "breakpoints": true
+    }
+  ]
+}
