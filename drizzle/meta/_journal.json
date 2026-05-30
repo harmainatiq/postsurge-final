@@ -43,6 +43,13 @@
       "when": 1777876884577,
       "tag": "0005_graceful_valkyrie",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779660095073,
+      "tag": "0006_good_blonde_phantom",
+      "breakpoints": true
     }
   ]
 }
