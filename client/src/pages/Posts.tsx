@@ -134,7 +134,7 @@ export default function Posts() {
 
   const selectedPosts = posts.filter((p) => p.isSelected);
   const selectedCount = selectedPosts.length;
-  const selectedPostsWithoutImage = selectedPosts.filter(p => !p.imageUrl && !p.videoUrl);
+  const selectedPostsWithoutImage = selectedPosts.filter(p => !p.imageUrl);
   const instagramWarning = selectedPostsWithoutImage.length > 0;
 
   const togglePlatform = (
@@ -571,7 +571,7 @@ export default function Posts() {
               ))}
               {instagramWarning && publishPlatforms.includes("INSTAGRAM") && (
                 <div className="p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg text-sm text-amber-800 dark:text-amber-200">
-                  Instagram requires an image or video. Posts without images or videos will skip Instagram automatically.
+                  Instagram requires an image. Posts without images will skip Instagram automatically.
                 </div>
               )}
             </div>
@@ -622,7 +622,7 @@ export default function Posts() {
                 </div>
                 {instagramWarning && schedulePlatforms.includes("INSTAGRAM") && (
                   <div className="p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg text-sm text-amber-800 dark:text-amber-200">
-                    Instagram requires an image or video. Posts without images or videos will skip Instagram automatically.
+                    Instagram requires an image. Posts without images will skip Instagram automatically.
                   </div>
                 )}
               </div>

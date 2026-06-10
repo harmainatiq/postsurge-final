@@ -215,8 +215,8 @@ For Railway, Render, or other platforms:
 2. Build the app: `pnpm build`
 3. Start the server: `pnpm start`
 
-For Inngest setup on production, see [INNGEST_SETUP.md](./INNGEST_SETUP.md)
+For Inngest setup on production, see [INNGEST_SETUP.md](./INNGEST_SETUP.md).
 
 ## License
 
-MIT
+MIT.
