@@ -1,73 +1,19 @@
 import { storagePut } from "../storage";
 import { ENV } from "./env";
-import { GoogleGenAI } from "@google/genai";
 
-/**
- * Priority chain:
- *   1. Gemini 2.5 Flash Image  (if GEMINI_API_KEY set)
- *   2. HuggingFace FLUX.1      (if HUGGINGFACE_API_KEY set)
- *   3. Pollinations.AI          (always-available free fallback)
- */
 export async function generateAndStoreImage(prompt: string): Promise<string> {
-  let buffer: Buffer;
-
-  if (ENV.geminiApiKey) {
-    try {
-      console.log("[ImageGen] Using Gemini 2.5 Flash Image");
-      buffer = await generateViaGemini(prompt);
-      console.log("[ImageGen] Gemini succeeded");
-    } catch (err) {
-      console.warn("[ImageGen] Gemini failed:", err);
-      if (ENV.huggingFaceApiKey) {
-        console.log("[ImageGen] Falling back to HuggingFace FLUX.1");
-        buffer = await generateViaHuggingFace(prompt);
-        console.log("[ImageGen] HuggingFace succeeded");
-      } else {
-        console.log("[ImageGen] Falling back to Pollinations.AI");
-        buffer = await generateViaPollinationsWithRetry(prompt);
-        console.log("[ImageGen] Pollinations succeeded");
-      }
-    }
-  } else if (ENV.huggingFaceApiKey) {
-    console.log("[ImageGen] Using HuggingFace FLUX.1");
-    buffer = await generateViaHuggingFace(prompt);
-    console.log("[ImageGen] HuggingFace succeeded");
-  } else {
-    console.log("[ImageGen] Using Pollinations.AI");
-    buffer = await generateViaPollinationsWithRetry(prompt);
-    console.log("[ImageGen] Pollinations succeeded");
+  if (!ENV.huggingFaceApiKey) {
+    throw new Error("HUGGINGFACE_API_KEY is not set");
   }
+
+  console.log("[ImageGen] Using HuggingFace FLUX.1");
+  const buffer = await generateViaHuggingFace(prompt);
+  console.log("[ImageGen] HuggingFace succeeded");
 
   const key = `posts/${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const { url } = await storagePut(key, buffer, "image/png");
   console.log("[ImageGen] Uploaded to Cloudinary:", url);
   return url;
-}
-
-async function generateViaGemini(prompt: string): Promise<Buffer> {
-  const ai = new GoogleGenAI({ apiKey: ENV.geminiApiKey });
-
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash-image",
-    contents: prompt,
-    config: {
-      responseModalities: ["IMAGE"],
-      imageConfig: { aspectRatio: "1:1" },
-    } as any,
-  });
-
-  const candidate = response.candidates?.[0];
-  if (!candidate?.content?.parts) {
-    throw new Error("Gemini: No content parts returned");
-  }
-
-  for (const part of candidate.content.parts) {
-    if ((part as any).inlineData?.data) {
-      return Buffer.from((part as any).inlineData.data, "base64");
-    }
-  }
-
-  throw new Error("Gemini returned no image data");
 }
 
 async function generateViaHuggingFace(prompt: string): Promise<Buffer> {
@@ -98,25 +44,6 @@ async function generateViaHuggingFace(prompt: string): Promise<Buffer> {
 
   const arrayBuffer = await response.arrayBuffer();
   return Buffer.from(arrayBuffer);
-}
-
-async function generateViaPollinationsWithRetry(prompt: string): Promise<Buffer> {
-  const encodedPrompt = encodeURIComponent(prompt);
-  const negativePrompt = encodeURIComponent("text, words, letters, watermark, blurry, low quality, ugly, deformed");
-  const models = ["turbo", "flux"];
-
-  for (const model of models) {
-    try {
-      const url = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&model=${model}&nologo=true&negative_prompt=${negativePrompt}&seed=${Date.now()}`;
-      const response = await fetch(url);
-      if (!response.ok) continue;
-      return Buffer.from(await response.arrayBuffer());
-    } catch {
-      // try next model
-    }
-  }
-
-  throw new Error("All image generation models failed");
 }
 
 /**
