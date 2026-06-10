@@ -9,13 +9,13 @@ build/
 
 # Environment variables
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
 # IDE and editor files
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -110,3 +110,4 @@ temp/
 .webdev/
 temp_auto_push.bat
 temp_interactive_push.bat
+branch_structure.json
